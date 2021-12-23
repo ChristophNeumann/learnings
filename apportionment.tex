@@ -1,0 +1,91 @@
+\documentclass[12pt]{article}
+ \usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{cleveref}
+ 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\usepackage{bbm}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\st}{\quad\mbox{s.t.}\quad}
+ \newtheorem{definition}{Definition} 
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{lemma}[definition]{Lemma}
+
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or lemma or whatever
+ 
+\begin{document}
+ 
+%\renewcommand{\qedsymbol}{\filledbox}
+%Good resources for looking up how to do stuff:
+%Binary operators: http://www.access2science.com/latex/Binary.html
+%General help: http://en.wikibooks.org/wiki/LaTeX/Mathematics
+%Or just google stuff
+ 
+\title{Apportionment as a Parametric Optimization Problem}
+\author{Christoph Neumann}
+\maketitle
+In politics, the problem of apportionment corresponds to assigning seats to different parties in a parliament, proportionately to vote counts from a popular election. The difficulty of apportionment arises due to the fact that the numbers to be apportioned are integers, but the shares that determine the rule of apportionment are real numbers. From the viewpoint of optimization theory, it is reasonable to minimize \emph{error} of this process. 
+The notation is as follows.
+
+We aim to distribute $h$ seats to political parties $i = 1,\dots, m$, where each party has $p_i$ votes from a popular election. Therefore, a component $q_i = h \frac{p_i}{\sum_{i=1}^m p_i} \in [0,h]$ of the vector $q\in \R^m$ denotes the number of seats in the parliament of party $i$ that corresponds to its exact share. The decision vector is denoted by $y \in \Z^m$, where $y_i$ stands for the apportioned number of seats for party $i$.  
+The corresponding optimization problem of minimizing the error of apportionment may be stated as
+\begin{eqnarray*}
+IP:\qquad \min_{y\in\Z^m}\,f(y) = \|y - q\| \st \sum_{i=1}^m y_i & = & h, \end{eqnarray*}
+where $\|\cdot\|$ stands for any norm.
+
+It is easily seen that, if $q$ is integer in all components, we may choose $y^\star=q$ with a corresponding error of zero. If, however, we have $q_i \not \in \Z$ for some $i$, an exact apportionment is infeasible, resulting in some minimal error. Hence, we may call $q$ the utopian distribution of seats.
+
+From an egalitarian viewpoint, it seems sensible to apportion the seats \emph{as equals as possible}. This results in an optimization problem $IP$ that minimizes the $\ell_\infty$-norm. From a mathematical perspective this is convenient, as the $IP$ may then be reformulated, using its equivalent epigraph, as  
+
+\begin{eqnarray*}
+MILP_{epi}:\qquad \min_{(y, \alpha) \in\Z^m \times \R}\,\alpha \st \sum_{i=1}^m y_i & = & h \\
+																	y_i - q_i &\leq & \alpha \\
+                                                                    -y_i + q_i & \leq & \alpha.
+\end{eqnarray*}
+
+The feasible set of $MILP_{eip}$ is denoted by $M_{epi}$, any of its optimal points by $(y^\star,\alpha^\star)$, and its optimal value by $f(y^\star) = \alpha^\star$. The latter can be interpreted as the largest deviation from the apportioned to the utopian number of seats that is attained by some party $i$.
+
+Let us next derive bounds for the optimal value $\alpha^\star$. Clearly, as a lower bound, we have $\alpha^* \geq 0$, as the inequality restrictions are, otherwise, unattainable. An upper bound for $\alpha^\star$ may be derived as follows.
+
+\begin{lemma}
+\label{lem:alpha1}
+For any $h>0$ and any $q \in \R^m$, we have $\alpha^\star <1$.
+\end{lemma}
+\begin{proof}
+Assume $\alpha^\star \geq 1$. Then, by optimality, there exists at least one $i$ with \begin{equation}\label{eq:lemH1} y^\star_i - q_i \geq 1,\text{ or } \end{equation} \begin{equation}\label{eq:lemH2} -y_i^\star + q_i \geq 1.\end{equation} Moreover, due to the restriction $\sum_{i=1}^m y_i  =  h = \sum_{i=1}^m q_i $, for every index $i$ where \eqref{eq:lemH1} holds, we have at least one index $j$ with $y_j^\star - q_j < 0$. Analogously, in the case of \eqref{eq:lemH2}, we can find an index $j$ with $y_j^\star - q_j > 0$.
+
+Hence, subtracting (adding) $1$ from (to) each component, where the inequality from \eqref{eq:lemH1} (the inequality from \eqref{eq:lemH2}) holds, and simultaneously adding (subtracting) $1$ to (from) some $j$ with $y_j^\star - q_j < 0$ ($y_j^\star - q_j >0$) reduces the objective value. Hence, $\alpha^\star$ cannot be optimal.
+\end{proof}
+
+\begin{theorem}
+\label{the:quota}
+Every solution $y^\star$ from $IP$ satisfies \emph{quota}, that is $ y_i^\star \in \{ \lfloor q_i \rfloor, \lceil q_i \rceil \}$. 
+\end{theorem}
+\begin{proof}
+We have $y^\star \in \Z^m$, and hence only need to show that $y_i \geq \lfloor q_i \rfloor$ and $y_i \leq \lceil q_i \rceil$, for all $i = 1, \dots, m$. From \Cref{lem:alpha1}, for any $i = 1, \dots, m$ we have $q_i-1 < y_i^\star < q_i+1$. This implies	 \begin{equation} \label{eq:lemQ2}
+\lfloor q_i \rfloor -1 < y_i^\star < \lceil q_i \rceil +1.
+\end{equation} With $\lceil q_i \rceil, \lfloor q_i \rfloor, y^\star_i \in \Z$, we can strengthen the inequality from \eqref{eq:lemQ2} to $\lfloor q_i \rfloor \leq y^\star_i \leq \lceil q_i \rceil$, which shows the assertion. 
+\end{proof}
+
+Next, we show that the \emph{solution} of Hamilton's method $(y^h,\alpha^h)$ solves the problem $MILP_{epi}$, with $\alpha^h = f(y^h)$. The latter is defined by initially giving each party its lower quota $y^{0}_i = \lfloor q_i \rfloor$, $i=1, \dots, m$, subsequently ordering the parties in a priority list according to their fractional remainders, $d_j = q_j - \lfloor q_j \rfloor$, with $d_{j_1} \geq d_{j_2}\geq \dots \geq d_{j_m}$, and finally setting $y^h_i = y_i^0 + 1$, for the first $t = h-\sum_{i=1}^m y^0_i = \sum_{i=1}^m d_i$ parties on the list, and $y^h_i = y^0_i$ for the remaining $m-t$ parties.
+\begin{theorem}
+The Hamilton method solves $MILP_{epi}$, that is $f(y^h) = \alpha^\star$.
+\end{theorem}
+\begin{proof}
+$(y^h,f(y^h))$ is obviously feasible for $MILP_{epi}$ so that we only have to show that there exists no $(\bar y, \bar \alpha) \in M_{epi}$ with $\bar \alpha < f(y^h)$. If $t=0$, the claim trivially holds, as we then have $y_i^h = q_i$, for all $i=1,\dots,m$, and thus $f(y^h)=0$. Let us next examine cases, where $1 \leq t \leq m-1$.
+
+For any $y^h$, we have $y^h_i \in \{\lfloor q_i\rfloor, \lceil q_i\rceil\}$, and thus $|y^h_i - q_i| < 1$ for all $i=1,\dots,m$, and  $\alpha^h <1$. For any $(\bar y,\bar \alpha)$ with $f(\bar y)\leq\bar{\alpha}< \alpha^h$, this implies \begin{equation}\label{eq:plusminusone} y^h_i -1 \leq \bar y_i \leq y^h_i+1\end{equation} for all $i=1,\dots,m$. In fact, assume $\bar y_i > y_i^h + 1$ for some $i$. As we have $\bar y_i, y_i^h \in \Z$, this implies $\bar y_i \geq y_i^h+2$, and \[\bar \alpha \geq \bar y_i - q_i \geq \underbrace{y_i^h - q_i}_{>-1} +2 > 1, \]
+which contradicts $\bar{\alpha}< \alpha^h$ (In the same way we can establish the first part of Inequality~\eqref{eq:plusminusone}).
+
+Without loss of generality, let us assume that the parties are ordered with respect to their fractional remainders, that is $d_1 \geq \dots, \geq d_m$. Then, $\bar \alpha < \alpha^h$ implies 
+\begin{equation} \label{eq:geq}
+y_i \leq y^h_i,
+\end{equation}  for all $i=1,\dots,t$, and \begin{equation}\label{eq:leq} \bar y_i\geq y_i^h, \end{equation} for all $i=t+1,\dots, m$.
+
+The restriction $\sum_{i=1}^m y_i  =  h$, together with \eqref{eq:plusminusone}, \eqref{eq:geq}, and \eqref{eq:leq} implies that the only way to find some $(\bar y, \bar \alpha) \in M_{epi}$ with $\bar \alpha < \alpha^h$ is to (simultaneously) redistribute one seat from any of the first $t$ to any of the last $m-t$ (ordered) parties. The objective value of the Hamilton method corresponds to \[\alpha^h = \max\{1-d_1, \dots, 1-d_i, \dots, 1-d_t, d_{t+1}, \dots, d_{j}, \dots, d_m\}.\] By shifting one seat from party $i$ to $j$ with $i<t<j$, we have \[\bar \alpha \geq \max \{1-d_1, \dots, 1-d_j, \dots, 1-d_t, d_{t+1}, \dots, d_i, \dots, d_m\}.\] However, $d_i \geq d_j$ implies $\bar \alpha \geq \alpha^h$, which, overall, shows that there exists no $(\bar y, \bar \alpha) \in M_{epi}$ with $\bar \alpha < \alpha^h$. Hence, $(y^h,\alpha^h)$ is optimal for $MILP_{epi}$.
+
+\end{proof}
+\end{document}
